@@ -12,11 +12,11 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
 });
 
-let title = "Tweetbio – AI Twitter Bio Generator";
-let description = "Generate your next Twitter bio in seconds";
-let url = "https://www.twitterbio.io/";
+let title = "Closure – AI Ceremony Closer for Agile Teams";
+let description = "Bring your ceremonies to a close with panache";
+let url = "https://ceremony-closer.vercel.app/";
 let ogimage = "https://www.twitterbio.io/og-image.png";
-let sitename = "twitterbio.io";
+let sitename = "ceremony-closer.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(url),
@@ -50,7 +50,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <head>
-        <PlausibleProvider domain="twitterbio.io" />
+        <PlausibleProvider domain="ceremony-closer.vercel.app" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
