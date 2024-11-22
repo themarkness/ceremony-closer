@@ -21,20 +21,17 @@ export async function POST(req: Request) {
         : 'retrospective closing phrase that celebrates the team\'s wins'
     }. 
 
-    Format options (choose one randomly):
-    1. "Simple phrase (max 8 words)!"
-    2. "<Famous person> once said: '<Short quote>'"
-    3. "<Snappy phrase> As they say in <industry/movie/show>: '<quote>'"
+    Format:
+    Simple phrase (max 8 words)! appended with either (choose one randomly)
+    1. As <Famous person> once said: '<Short motivational quote>'
+    3. As they say in <industry/movie/show>: '<quote>'
 
     Examples:
-    - "Let's crush it! Engage warp 10!"
-    - "Steve Jobs once said: 'Stay hungry, stay foolish!'"
-    - "Mission accomplished! As they say in Top Gun: 'I feel the need for speed!'"
-    - "We 10X'd it! Over and out!"
-    - "To infinity and beyond!"
-    - "Another epic sprint in the books! Excelsior!"
+    - Let's crush it, team! As Steve Jobs once said: 'Stay hungry, stay foolish!'
+    - Mission accomplished, team! As they say in Top Gun: 'I feel the need for speed!'
+  
 
-    Response must be ONLY the phrase, no explanations. Keep it ${vibe.toLowerCase()} and under 10 words total.`;
+    Response must be ONLY the phrase and the quote, no explanations of why they are useful. Keep it ${vibe.toLowerCase()} and under 10 words total.`;
 
     const runner = together.chat.completions.stream({
       model,
