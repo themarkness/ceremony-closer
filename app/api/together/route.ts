@@ -2,21 +2,18 @@ import Together from "together-ai";
 
 export async function POST(req: Request) {
   try {
-    // Log environment variable status (will be redacted in production)
-    console.log('API Key exists:', !!process.env.TOGETHER_API_KEY);
-    
     if (!process.env.TOGETHER_API_KEY) {
-      console.error('Missing API key');
       return new Response(
         JSON.stringify({ error: "Together API key is not configured" }), 
-        { 
-          status: 500,
-          headers: { 'Content-Type': 'application/json' }
-        }
+        { status: 500 }
       );
     }
 
     const { model, ceremony, vibe } = await req.json();
+    
+    const together = new Together({ 
+      apiKey: process.env.TOGETHER_API_KEY as string 
+    });
     
     const enhancedPrompt = `Generate only a single short, energetic ${
       ceremony === 'standup' 
@@ -30,47 +27,32 @@ export async function POST(req: Request) {
     3. "<Snappy phrase> As they say in <industry/movie/show>: '<quote>'"
 
     Examples:
-    - "Let's crush it! Engage warp 10! As Steve Jobs once said: 'Stay hungry, stay foolish!'"
+    - "Let's crush it! Engage warp 10!"
+    - "Steve Jobs once said: 'Stay hungry, stay foolish!'"
     - "Mission accomplished! As they say in Top Gun: 'I feel the need for speed!'"
     - "We 10X'd it! Over and out!"
     - "To infinity and beyond!"
     - "Another epic sprint in the books! Excelsior!"
 
-    Response must be ONLY the phrase and a quote, no explanations. Keep it ${vibe.toLowerCase()} and under 10 words total.`;
+    Response must be ONLY the phrase, no explanations. Keep it ${vibe.toLowerCase()} and under 10 words total.`;
 
-    console.log('Received request with model:', model);
+    const runner = together.chat.completions.stream({
+      model,
+      messages: [{ role: "user", content: enhancedPrompt }],
+      temperature: 0.9,
+      max_tokens: 50,
+      stop: ["\n", "This", "Note", "Remember"],
+    });
 
-    try {
-      // Initialize Together client
-      const together = new Together(process.env.TOGETHER_API_KEY);
-      
-      const runner = together.chat.completions.stream({
-        model,
-        messages: [{ role: "user", content: enhancedPrompt }],
-        temperature: 0.9,
-        max_tokens: 50,
-        stop: ["\n", "This", "Note", "Remember"], // Stop tokens to prevent explanations
-      });
-
-      return new Response(runner.toReadableStream());
-    } catch (innerError) {
-      console.error('Together API error:', innerError);
-      return new Response(
-        JSON.stringify({ error: "Error with Together API", details: innerError.message }), 
-        { 
-          status: 500,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
+    return new Response(runner.toReadableStream());
   } catch (error) {
     console.error('Route handler error:', error);
     return new Response(
-      JSON.stringify({ error: "Failed to process request", details: error.message }), 
-      { 
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
+      JSON.stringify({ 
+        error: "Failed to process request", 
+        details: error instanceof Error ? error.message : 'Unknown error'
+      }), 
+      { status: 500 }
     );
   }
 }

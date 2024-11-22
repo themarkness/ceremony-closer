@@ -16,7 +16,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [bio, setBio] = useState("");
   const [vibe, setVibe] = useState<VibeType>("Professional");
-  const [generatedBios, setGeneratedBios] = useState<String>("");
+  const [generatedBios, setGeneratedBios] = useState<string>("");
   const [isLlama, setIsLlama] = useState(false);
   const [selectedCeremony, setSelectedCeremony] = useState<Ceremony | null>(null);
 
